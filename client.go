@@ -1,9 +1,11 @@
 package tus
 
 import (
+	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
+	"net/http/httputil"
 	netUrl "net/url"
 	"strconv"
 )
@@ -84,7 +86,11 @@ func (c *Client) CreateUpload(u *Upload) (*Uploader, error) {
 	res, err := c.Do(req)
 
 	if err != nil {
-		return nil, err
+		ds, err2 := httputil.DumpResponse(res, true)
+		if err2 != nil {
+			return nil, fmt.Errorf("%s: %s", err2, err)
+		}
+		return nil, fmt.Errorf("%s: %w", ds, err)
 	}
 	defer res.Body.Close()
 
