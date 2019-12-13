@@ -83,6 +83,12 @@ func (c *Client) CreateUpload(u *Upload) (*Uploader, error) {
 	req.Header.Set("Upload-Length", strconv.FormatInt(u.size, 10))
 	req.Header.Set("Upload-Metadata", u.EncodedMetadata())
 
+	dr, err := httputil.DumpRequest(req, true)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Printf("%s\n", dr)
+
 	res, err := c.Do(req)
 
 	if err != nil {
